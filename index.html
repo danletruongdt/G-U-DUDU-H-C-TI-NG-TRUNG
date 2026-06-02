@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gấu Nhỏ Học Tiếng Trung 🐼</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2 family=Comfortaa:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ĐỊNH NGHĨA CÁC BIẾN CƠ BẢN */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comfortaa', 'Noto Sans SC', sans-serif;
+            transition: all 0.4s ease; /* Hiệu ứng chuyển màu mượt mà khi đổi mùa */
+        }
+
+        /* 🌸 CHỦ ĐỀ 1: MÙA XUÂN (Hồng Pastel / Hoa Anh Đào) */
+        .theme-spring {
+            --background: #fff0f5;
+            --card-bg: #ffffff;
+            --primary: #ffb7b2;
+            --primary-dark: #ff8b94;
+            --text-color: #6d5959;
+            --accent: #ffdac1;
+            --bear-emoji: "🌸🐼🌸";
+        }
+
+        /* ☀️ CHỦ ĐỀ 2: MÙA HẠ (Xanh Dương / Biển Xanh Cát Vàng) */
+        .theme-summer {
+            --background: #e0f7fa;
+            --card-bg: #ffffff;
+            --primary: #4fc3f7;
+            --primary-dark: #0288d1;
+            --text-color: #263238;
+            --accent: #fff59d;
+            --bear-emoji: "🏖️🐼🍦";
+        }
+
+        /* 🥮 CHỦ ĐỀ 3: LỄ HỘI TRUNG THU (Vàng Ánh Trăng / Đèn Lồng) */
+        .theme-midautumn {
+            --background: #fffde7;
+            --card-bg: #ffffff;
+            --primary: #ffd54f;
+            --primary-dark: #f57c00;
+            --text-color: #3e2723;
+            --accent: #ffb74d;
+            --bear-emoji: "🥮🐼🐰";
+        }
+
+        /* 🎄 CHỦ ĐỀ 4: GIÁNG SINH (Đỏ Ấm Áp / Tuyết Trắng) */
+        .theme-christmas {
+            --background: #e8f5e9;
+            --card-bg: #ffffff;
+            --primary: #ff8a80;
+            --primary-dark: #d32f2f;
+            --text-color: #1b5e20;
+            --accent: #81c784;
+            --bear-emoji: "🎄🐼🎅";
+        }
+
+        /* CSS CHUNG CHO GIAO DIỆN */
+        body {
+            background-color: var(--background);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Hiệu ứng hạt bay (Lá rơi, tuyết rơi, cánh hoa...) */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: fall linear infinite;
+            z-index: 999;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+
+        /* Bố cục chính chứa 2 khối */
+        .main-layout {
+            display: flex;
+            gap: 25px;
+            width: 100%;
+            max-width: 1100px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .container, .vocab-notebook {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 4px solid white;
+        }
+
+        .container { flex: 1; min-width: 320px; max-width: 550px; text-align: center; }
+        .vocab-notebook { flex: 1; min-width: 320px; max-width: 420px; }
+
+        /* Bộ chọn cấu hình */
+        .selector-group {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        select, input, button.action-btn {
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        select { cursor: pointer; }
+
+        /* Thẻ học */
+        .flashcard {
+            background: #fafafa;
+            border: 3px dashed var(--primary);
+            border-radius: 25px;
+            padding: 30px 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .chinese-text {
+            font-size: 3.3rem;
+            color: var(--primary-dark);
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .pinyin { font-size: 1.4rem; color: #78909c; margin-bottom: 10px; font-weight: bold; }
+        .meaning { font-size: 1.15rem; color: #7d5a5a; font-style: italic; }
+
+        .audio-btn {
+            background: var(--background);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .audio-btn:hover, .nav-btn:hover { transform: scale(1.1); }
+
+        .nav-buttons { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .nav-btn {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--text-color);
+            padding: 6px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .practice-zone { background: var(--background); border-radius: 20px; padding: 20px; }
+        
+        .mic-btn {
+            background: var(--primary);
+            border: none;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mic-btn.recording {
+            background: var(--primary-dark);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Kết quả chấm điểm */
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 20px; display: none; }
+        .score-circle {
+            width: 85px; height: 85px; border-radius: 50%; border: 6px solid;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; font-weight: bold; margin: 0 auto 10px auto; background: white;
+        }
+
+        .result-good { background-color: #c8e6c9; color: #2e7d32; }
+        .result-good .score-circle { border-color: #4caf50; }
+        .result-try { background-color: #ffe0b2; color: #ef6c00; }
+        .result-try .score-circle { border-color: #ff9800; }
+        .result-bad { background-color: #ffcdd2; color: #c62828; }
+        .result-bad .score-circle { border-color: #f44336; }
+
+        /* Giao diện sổ từ vựng */
+        .add-word-form { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .add-word-form input { width: 100%; }
+        .btn-add { background: var(--accent); font-weight: bold; cursor: pointer; }
+        .vocab-list { max-height: 280px; overflow-y: auto; }
+        .vocab-item {
+            background: var(--background); padding: 10px; border-radius: 12px;
+            margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+            border-left: 5px solid var(--primary-dark);
+        }
+
+        /* Hiệu ứng hạt rơi */
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="theme-spring"> <!-- Mặc định ban đầu vào là Mùa xuân dễ thương -->
+
+    <div id="particle-container"></div>
+
+    <header>
+        <h1 id="header-logo"><span id="bear-icon">🌸🐼🌸</span> 嘟嘟汉语</h1>
+        <p>Học phát âm đổi màu theo mùa siêu cấp đáng yêu! ✨</p>
+    </header>
+
+    <div class="main-layout">
+        
+        <!-- KHỐI LUYỆN PHÁT ÂM CHÍNH -->
+        <div class="container">
+            <div class="selector-group">
+                <div>
+                    <label style="font-weight:bold;">Mùa/Lễ hội: </label>
+                    <select id="theme-select" onchange="changeTheme()">
+                        <option value="spring">Mùa Xuân 🌸</option>
+                        <option value="summer">Mùa Hạ 🏖️</option>
+                        <option value="midautumn">Trung Thu 🥮</option>
+                        <option value="christmas">Giáng Sinh 🎄</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight:bold;">Chủ đề: </label>
+                    <select id="topic" onchange="changeTopic()">
+                        <option value="seasonal">Cụm từ theo mùa ❄️</option>
+                        <option value="basic">Chào hỏi giao tiếp 💬</option>
+                        <option value="custom">Từ trong Sổ tay của tôi 📓</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="prevWord()"><i class="fas fa-chevron-left"></i></button>
+                <span id="progress-text" style="font-weight: bold; align-self: center;">1/5</span>
+                <button class="nav-btn" onclick="nextWord()"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <div class="flashcard">
+                <div class="chinese-text" id="zh-text">春天</div>
+                <div class="pinyin" id="pinyin-text">chūntiān</div>
+                <div class="meaning" id="vn-text">Mùa xuân</div>
+                <button class="audio-btn" onclick="speakSample()"><i class="fas fa-volume-up"></i></button>
+            </div>
+
+            <div class="practice-zone">
+                <p style="margin-bottom: 10px; font-weight: bold;">Chạm míc đọc thử nhé:</p>
+                <button class="mic-btn" id="mic-button" onclick="toggleListening()">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <div class="status-text" id="status">Chờ bạn bấm nói...</div>
+            </div>
+
+            <div class="result-box" id="result-box">
+                <div class="score-circle" id="score-display">0%</div>
+                <div class="user-transcript" id="user-speak">Bạn nói: ""</div>
+                <div class="feedback-text" id="feedback">Đang phân tích...</div>
+            </div>
+        </div>
+
+        <!-- KHỐI SỔ TỪ VỰNG TỰ NHẬP -->
+        <div class="vocab-notebook">
+            <h3 style="margin-bottom: 15px; text-align: center;"><i class="fas fa-book"></i> Sổ Từ Cá Nhân</h3>
+            <div class="add-word-form">
+                <input type="text" id="new-zh" placeholder="Chữ Hán (Ví dụ: 喜欢)">
+                <input type="text" id="new-py" placeholder="Pinyin (Ví dụ: xǐhuan)">
+                <input type="text" id="new-vi" placeholder="Nghĩa (Ví dụ: Yêu thích)">
+                <button class="action-btn btn-add" onclick="addNewWord()">Thêm từ vào bộ nhớ ✨</button>
+            </div>
+            <div class="vocab-list" id="custom-vocab-list"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Kho dữ liệu phong phú kết hợp các từ vựng lễ hội và mùa
+        const wordData = {
+            seasonal: [
+                { zh: "春天", py: "chūntiān", vi: "Mùa xuân ấm áp" },
+                { zh: "夏天", py: "xiàtiān", vi: "Mùa hạ oi bức" },
+                { zh: "中秋节快乐", py: "zhōngqiūjié kuàilè", vi: "Chúc mừng Tết Trung Thu!" },
+                { zh: "圣诞快乐", py: "shèngdàn kuàilè", vi: "Giáng Sinh an lành!" },
+                { zh: "下雪了", py: "xià xuě le", vi: "Tuyết rơi rồi!" }
+            ],
+            basic: [
+                { zh: "你好", py: "nǐ hǎo", vi: "Xin chào" },
+                { zh: "谢谢", py: "xièxie", vi: "Cảm ơn bạn" },
+                { zh: "再见", py: "zàijiàn", vi: "Tạm biệt nhé" }
+            ],
+            custom: []
+        };
+
+        // Ký tự rơi tương ứng với từng mùa
+        const themeParticles = {
+            spring: ["🌸", "💮", "🍃"],
+            summer: ["☀️", "🍦", "🌊"],
+            midautumn: ["🥮", "🐰", "🏮"],
+            christmas: ["❄️", "🎄", "🎁"]
+        };
+
+        let currentTopic = 'seasonal';
+        let currentIndex = 0;
+        let isRecording = false;
+        let recognition;
+
+        // Bật tính năng nhận diện giọng nói
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'zh-CN';
+            recognition.onstart = () => {
+                isRecording = true;
+                document.getElementById('mic-button').classList.add('recording');
+                document.getElementById('status').innerText = "Gấu đang lắng nghe... Bạn nói đi nào!";
+            };
+            recognition.onerror = () => {
+                document.getElementById('status').innerText = "Không nhận được tín hiệu mic rồi!";
+                stopRecordingState();
+            };
+            recognition.onend = () => { stopRecordingState(); };
+            recognition.onresult = (event) => {
+                analyzePronunciation(event.results[0][0].transcript);
+            };
+        }
+
+        // HÀM ĐỔI CHỦ ĐỀ / MÙA / LỄ HỘI
+        function changeTheme() {
+            const selectedTheme = document.getElementById('theme-select').value;
+            // Thay đổi class ở thẻ body để CSS cập nhật màu toàn bộ trang
+            document.body.className = "theme-" + selectedTheme;
+            
+            // Đổi emoji chú Gấu tiêu đề theo mùa
+            const style = getComputedStyle(document.body);
+            document.getElementById('bear-icon').innerText = style.getPropertyValue('--bear-emoji').trim();
+
+            // Tạo hiệu ứng hạt rơi tương ứng
+            createParticles(themeParticles[selectedTheme]);
+        }
+
+        // Tạo hiệu ứng rơi lãng mạn trên màn hình
+        function createParticles(symbols) {
+            const container = document.getElementById('particle-container');
+            container.innerHTML = ''; // Xóa hạt mùa cũ đi
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's'; // từ 3s tới 6s
+                particle.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Quản lý từ vựng và nạp bài học
+        function loadWord() {
+            const list = wordData[currentTopic];
+            if (!list || list.length === 0) {
+                document.getElementById('zh-text').innerText = "Trống";
+                document.getElementById('pinyin-text').innerText = "";
+                document.getElementById('vn-text').innerText = "Hãy thêm từ ở sổ tay nhé!";
+                document.getElementById('progress-text').innerText = "0/0";
+                return;
+            }
+            if (currentIndex >= list.length) currentIndex = list.length - 1;
+            
+            document.getElementById('zh-text').innerText = list[currentIndex].zh;
+            document.getElementById('pinyin-text').innerText = list[currentIndex].py;
+            document.getElementById('vn-text').innerText = list[currentIndex].vi;
+            document.getElementById('progress-text').innerText = `${currentIndex + 1}/${list.length}`;
+            document.getElementById('result-box').style.display = 'none';
+        }
+
+        function changeTopic() {
+            currentTopic = document.getElementById('topic').value;
+            currentIndex = 0;
+            loadWord();
+        }
+
+        function nextWord() { if (currentIndex < wordData[currentTopic].length - 1) { currentIndex++; loadWord(); } }
+        function prevWord() { if (currentIndex > 0) { currentIndex--; loadWord(); } }
+        
+        function speakSample() {
+            const text = document.getElementById('zh-text').innerText;
+            if (text === "Trống") return;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleListening() {
+            if (!recognition || document.getElementById('zh-text').innerText === "Trống") return;
+            if (isRecording) recognition.stop(); else recognition.start();
+        }
+
+        function stopRecordingState() {
+            isRecording = false;
+            document.getElementById('mic-button').classList.remove('recording');
+        }
+
+        // Xử lý Sổ từ vựng cá nhân
+        function loadCustomVocab() {
+            const saved = localStorage.getItem('dudu_festival_vocab');
+            if (saved) wordData.custom = JSON.parse(saved);
+            renderNotebook();
+        }
+
+        function addNewWord() {
+            const zh = document.getElementById('new-zh').value.trim();
+            const py = document.getElementById('new-py').value.trim();
+            const vi = document.getElementById('new-vi').value.trim();
+            if (!zh || !vi) return alert("Điền chữ Hán và Nghĩa giùm Gấu nhé!");
+
+            wordData.custom.push({ zh, py: py || "...", vi });
+            localStorage.setItem('dudu_festival_vocab', JSON.stringify(wordData.custom));
+            
+            document.getElementById('new-zh').value = '';
+            document.getElementById('new-py').value = '';
+            document.getElementById('new-vi').value = '';
+            
+            renderNotebook();
+            currentTopic = 'custom';
+            document.getElementById('topic').value = 'custom';
+            currentIndex = wordData.custom.length - 1;
+            loadWord();
+        }
+
+        function renderNotebook() {
+            const container = document.getElementById('custom-vocab-list');
+            container.innerHTML = '';
+            if (wordData.custom.length === 0) {
+                container.innerHTML = '<p style="color:#aaa; font-style:italic; font-size:0.85rem; text-align:center;">Sổ từ trống trơn hà...</p>';
+                return;
+            }
+            wordData.custom.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'vocab-item';
+                div.innerHTML = `
+                    <div style="cursor:pointer;" onclick="selectCustom(${idx})">
+                        <b>${item.zh}</b> - <small>${item.vi}</small>
+                    </div>
+                    <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteWord(${idx}); event.stopPropagation();"></i>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function selectCustom(idx) {
+            currentTopic = 'custom';
+            document.getElementById('topic').value = 'custom';
+            currentIndex = idx;
+            loadWord();
+        }
+
+        function deleteWord(idx) {
+            wordData.custom.splice(idx, 1);
+            localStorage.setItem('dudu_festival_vocab', JSON.stringify(wordData.custom));
+            renderNotebook();
+            if (currentTopic === 'custom') { currentIndex = 0; loadWord(); }
+        }
+
+        // Tính điểm phát âm tinh gọn
+        function analyzePronunciation(userText) {
+            const target = document.getElementById('zh-text').innerText;
+            let cleanT = target.replace(/[\s.,\/#!$%\^&\*;:{}=\-_`~()？。，！]/g, "");
+            let cleanU = userText.replace(/[\s.,\/#!$%\^&\*;:{}=\-_`~()？。，！]/g, "");
+            
+            let matchCount = 0;
+            for(let char of cleanU) { if(cleanT.includes(char)) matchCount++; }
+            let scorePercent = Math.min(100, Math.round((matchCount / Math.max(1, cleanT.length)) * 100));
+
+            const resultBox = document.getElementById('result-box');
+            document.getElementById('user-speak').innerText = `Bạn đã phát âm: "${userText}"`;
+            document.getElementById('score-display').innerText = `${scorePercent}%`;
+            resultBox.style.display = 'block';
+            document.getElementById('status').innerText = "Đã tính điểm xong!";
+            resultBox.className = "result-box";
+
+            if (scorePercent >= 80) {
+                resultBox.classList.add('result-good');
+                document.getElementById('feedback').innerHTML = "✨ <b>Quá đỉnh luôn!</b> Giọng chuẩn thế này đi Trung Quốc không sợ lạc rồi! 🎉";
+            } else if (scorePercent >= 45) {
+                resultBox.classList.add('result-try');
+                document.getElementById('feedback').innerHTML = "👍 <b>Suýt soát nè!</b> Gấu nghe gần chuẩn rồi, bấm nút Loa nghe lại rồi đọc to hơn nhé! 🌟";
+            } else {
+                resultBox.classList.add('result-bad');
+                document.getElementById('feedback').innerHTML = "💪 <b>Cố lên xíu nữa!</b> Trình duyệt chưa nghe rõ lắm, bạn thử đọc lại thật chậm nha!";
+            }
+        }
+
+        // Tự động chạy khi mở web
+        window.onload = function() {
+            changeTheme(); // Khởi tạo cánh hoa đào rơi mùa xuân
+            loadCustomVocab();
+            loadWord();
+        };
+    </script>
+</body>
+</html>
